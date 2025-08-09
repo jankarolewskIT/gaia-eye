@@ -11,6 +11,7 @@ Component?: any
 pageProps?: any
 }
 
+
 function App({ Component, pageProps }: AppProps) {
   return (
     <Authenticator>
