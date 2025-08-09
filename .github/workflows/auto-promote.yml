@@ -1,25 +1,34 @@
-name: Auto Promote
+name: Auto Merge dev → qa
 
 on:
   push:
-    branches: [dev]
+    branches:
+      - dev
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
-  auto-promote:
+  merge-dev-to-qa:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout dev branch
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: dev
+          fetch-depth: 0  
 
       - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Auto Promote dev to qa
+      - name: Fetch all branches
+        run: git fetch origin qa
+
+      - name: Merge dev into qa
         run: |
           git checkout qa
-          git merge origin/dev --no-ff -m "Auto promote from dev to qa"
+          git merge dev --no-edit
           git push origin qa
